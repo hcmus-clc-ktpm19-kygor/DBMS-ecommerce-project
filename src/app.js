@@ -23,8 +23,13 @@ const apiRouter = require('./api/apiRouter');
 const loggedInUserGuard = require('./middlewares/loggedInUserGuard');
 
 // try to connect to database
-const db = require('./config/database.config');
-db.connect();
+const { sequelize } = require('./config/database.config');
+sequelize.authenticate()
+    .then(() => console.log("Connection has been established successfully."))
+    .catch((error) => {
+      console.error(error.message);
+      process.exit(-1);
+    })
 
 const app = express();
 
@@ -52,7 +57,9 @@ app.use(function (req, res, next) {
 // Router middleware
 app.use('/', indexRouter);
 app.use('/', authRouter);
+// app.use('/account' ,accountRouter);
 app.use('/account', loggedInUserGuard ,accountRouter);
+
 app.use('/products', productRouter);
 app.use('/confirmation', loggedInUserGuard, confirmationRouter);
 app.use('/users', usersRouter);

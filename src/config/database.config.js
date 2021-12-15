@@ -1,15 +1,17 @@
 require('dotenv').config()
-const mongoose = require('mongoose');
+const { Sequelize, DataTypes } = require('sequelize');
 
-async function connect() {
-  try {
-    await mongoose.connect(process.env.DB_CONNECTION_STRING);
-    console.log('Connection to the database has been established successfully.');
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
+  dialect: 'mssql',
+  logging: console.log,
+  dialectOptions: {
+    // Observe the need for this nested `options` field for MSSQL
+    options: {
+      // Your tedious options here
+      useUTC: false,
+      dateFirst: 1
+    }
   }
-  catch (error) {
-    console.error(error.message);
-    process.exit(-1);
-  }
-}
+});
 
-module.exports = { connect };
+module.exports = { sequelize, DataTypes };

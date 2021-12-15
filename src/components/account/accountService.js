@@ -9,7 +9,7 @@ const cloudinary = require('../../config/cloudinary.config');
  */
 module.exports.getById = async (id) => {
   try {
-    const account = await model.findById(id).lean();
+    const account = await model.findByPk(id);
     if (account === null) {
       return { mess: `Account id '${id}' not found` };
     }
@@ -26,7 +26,7 @@ module.exports.getById = async (id) => {
  */
 module.exports.getByUsername = async (username) => {
   try {
-    return await model.findOne({username});
+    return await model.findOne({ where: { username }});
   } catch (err) {
     throw err;
   }
@@ -35,54 +35,21 @@ module.exports.getByUsername = async (username) => {
 module.exports.validatePassword = async (user, password) => {
   return await bcrypt.compare(password, user.password);
 }
-
-/**
- * Phan trang cac account, moi trang 5 account
- * @param page
- * @returns {Promise<void>}
- */
-exports.paging = async (page) => {
-  try {
-    let perPage = 5; // số lượng sản phẩm xuất hiện trên 1 page
-    page = page || 1;
-
-    return await model
-    .find() // find tất cả các data
-    .skip((perPage * page) - perPage) // Trong page đầu tiên sẽ bỏ qua giá trị là 0
-    .limit(perPage);
-  } catch (err) {
-    throw err;
-  }
-};
-
-/**
- * Lay 1 list cac san pham tu database
- * @returns {Promise<[account: model]>}
- */
-module.exports.getAll = async () => {
-  try {
-    return await model.find();
-  } catch (err) {
-    throw err;
-  }
-};
-
 /**
  * Them account moi vao database
  * @param newAccount
  * @returns {Promise<string>}
  */
-module.exports.insert = async ({ username, email, password }) => {
+module.exports.insert = async ({ _id, username, email, password }) => {
   try {
-    const isExisted_username = await model.exists({ username });
-    const isExisted_email = await model.exists({ email });
-    if (isExisted_username || isExisted_email ) {
+    const isExisted_username = await model.findOne({ where: { username } });
+
+    if (isExisted_username) {
       return null;
     } else {
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      const account = new model({ username, password: hashedPassword, email });
-      return await account.save();
+      return await model.create({ _id, username, password: hashedPassword });
     }
   } catch (err) {
     throw err;
@@ -95,7 +62,7 @@ module.exports.insert = async ({ username, email, password }) => {
  * @param id user's id
  * @param updateUser
  * @param file
- * @returns {Promise<{account: model}>}
+ * @returns {Promise<[number, Model<TModelAttributes, TCreationAttributes>[]]>}
  */
 exports.update = async (id, updateUser, file) => {
   try {
@@ -118,21 +85,7 @@ exports.update = async (id, updateUser, file) => {
     const { url } = result ?? "";
     // Update user's info
     updateUser.avatar_url = url;
-    return await model.findByIdAndUpdate(id, updateUser,
-        { new: true }).lean();
-  } catch (err) {
-    throw err;
-  }
-}
-
-/**
- * Tim tai khoan bang id xoa khoi database
- * @param id
- * @returns {Promise<*>}
- */
-exports.delete = async (id) => {
-  try {
-    return await model.findByIdAndDelete(id);
+    return await model.update(updateUser, { where: { id }});
   } catch (err) {
     throw err;
   }

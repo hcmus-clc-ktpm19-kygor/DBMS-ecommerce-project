@@ -12,10 +12,4 @@ router.get('/:id', productController.get);
 // POST Method
 router.post('/', productController.insert);
 
-// PUT Method
-router.put('/:id', productController.update);
-
-// DELETE Method
-router.delete('/:id', productController.delete);
-
 module.exports = router;

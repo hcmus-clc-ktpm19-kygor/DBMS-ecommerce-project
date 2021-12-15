@@ -1,9 +1,8 @@
 const model = require('./customerModel');
-const mongoose = require('mongoose');
 
 exports.get = async (id) => {
   try {
-    const customer = await model.findById(mongoose.Types.ObjectId.createFromHexString(id));
+    const customer = await model.findByPk(id);
     if (customer === null) {
       return { mess: `Customer id '${id}' not found` };
     }
@@ -15,7 +14,7 @@ exports.get = async (id) => {
 
 exports.getAll = async () => {
   try {
-    return await model.find();
+    return await model.findAll();
   } catch (err) {
     throw err;
   }
