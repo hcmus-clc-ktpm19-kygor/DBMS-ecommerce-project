@@ -33,9 +33,16 @@ module.exports.getByUsername = async (username) => {
   }
 };
 
+/**
+ * Xac thuc password
+ * @param user
+ * @param password
+ * @returns {Promise<*>}
+ */
 module.exports.validatePassword = async (user, password) => {
   return await bcrypt.compare(password, user.password);
 }
+
 /**
  * Them account moi vao database
  * @param newAccount

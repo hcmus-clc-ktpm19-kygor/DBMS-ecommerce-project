@@ -1,5 +1,10 @@
 const model = require('./customerModel');
 
+/**
+ * Lay 1 customer len bang id
+ * @param id
+ * @returns {Promise<{mess: string}|Model<TModelAttributes, TCreationAttributes>>}
+ */
 exports.get = async (id) => {
   try {
     const customer = await model.findByPk(id);
@@ -12,14 +17,11 @@ exports.get = async (id) => {
   }
 };
 
-exports.getAll = async () => {
-  try {
-    return await model.findAll();
-  } catch (err) {
-    throw err;
-  }
-};
-
+/**
+ * Them 1 customer moi vao database
+ * @param newCustomer
+ * @returns {Promise<Model<TModelAttributes, TCreationAttributes>>}
+ */
 exports.insert = async (newCustomer) => {
   const customer = model.build(newCustomer);
   try {
@@ -46,19 +48,6 @@ exports.update = async (id, updateCustomer) => {
     });
 
     return await model.findOne( { where: { id }, raw: true } );
-  } catch (err) {
-    throw err;
-  }
-}
-
-/**
- * Tim khach hang bang id xoa khoi database
- * @param id
- * @returns {Promise<*>}
- */
-exports.delete = async (id) => {
-  try {
-    return await model.findByIdAndDelete(id);
   } catch (err) {
     throw err;
   }
