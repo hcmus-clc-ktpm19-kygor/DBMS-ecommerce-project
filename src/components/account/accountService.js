@@ -1,4 +1,5 @@
 const model = require('./accountModel');
+const customerService = require('../customer/customerService');
 const bcrypt = require('bcrypt');
 const cloudinary = require('../../config/cloudinary.config');
 
@@ -42,14 +43,19 @@ module.exports.validatePassword = async (user, password) => {
  */
 module.exports.insert = async ({ _id, username, email, password }) => {
   try {
-    const isExisted_username = await model.findOne({ where: { username } });
+    const isExistedUsername = await model.findOne({ where: { username } });
 
-    if (isExisted_username) {
+    if (isExistedUsername) {
       return null;
     } else {
       const hashedPassword = await bcrypt.hash(password, 10);
+      // Tạo tài khoản
+      const newAccount = await model.create({ _id, username, password: hashedPassword });
 
-      return await model.create({ _id, username, password: hashedPassword });
+      // Tạo khách hàng
+      await customerService.insert({ id: newAccount._id, email });
+
+      return newAccount;
     }
   } catch (err) {
     throw err;

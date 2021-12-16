@@ -10,7 +10,7 @@ router.get('/', controller.getAll);
 router.post('/', controller.insert);
 
 // PUT Method
-router.put('/:id', controller.update);
+router.put('/account/:id', controller.update);
 
 // DELETE Method
 router.delete('/:id', controller.delete);

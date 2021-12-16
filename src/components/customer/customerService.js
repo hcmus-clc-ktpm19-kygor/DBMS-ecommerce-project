@@ -21,7 +21,7 @@ exports.getAll = async () => {
 };
 
 exports.insert = async (newCustomer) => {
-  const customer = new model(newCustomer);
+  const customer = model.build(newCustomer);
   try {
     return await customer.save();
   } catch (err) {
@@ -34,12 +34,18 @@ exports.insert = async (newCustomer) => {
  *
  * @param id
  * @param updateCustomer
- * @returns {Promise<{customer: model}>}
+ * @returns {Promise<[Model<TModelAttributes, TCreationAttributes>, boolean]>}
  */
 exports.update = async (id, updateCustomer) => {
   try {
-    return await model.findByIdAndUpdate(id, updateCustomer,
-        { new: true });
+    delete updateCustomer.dob;
+    delete updateCustomer.sex;
+
+    await model.update(updateCustomer, {
+      where: { id },
+    });
+
+    return await model.findOne( { where: { id }, raw: true } );
   } catch (err) {
     throw err;
   }

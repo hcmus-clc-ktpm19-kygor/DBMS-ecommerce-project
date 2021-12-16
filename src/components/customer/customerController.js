@@ -36,8 +36,12 @@ exports.insert = async (req, res) => {
  */
 exports.update = async (req, res) => {
   try {
-    const updatedCustomer = await service.update(req.params.id, req.body);
-    res.json(updatedCustomer);
+    req.session.passport.user = {
+      ...req.session.passport.user,
+      ...await service.update(req.params.id, req.body)
+    };
+    // res.json(updatedCustomer);
+    res.redirect(`/account/${req.params.id}`);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }

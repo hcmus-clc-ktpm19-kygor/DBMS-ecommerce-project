@@ -59,7 +59,6 @@ app.use('/', indexRouter);
 app.use('/', authRouter);
 // app.use('/account' ,accountRouter);
 app.use('/account', loggedInUserGuard ,accountRouter);
-
 app.use('/products', productRouter);
 app.use('/confirmation', loggedInUserGuard, confirmationRouter);
 app.use('/users', usersRouter);
