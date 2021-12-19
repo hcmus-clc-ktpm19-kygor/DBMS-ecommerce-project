@@ -23,8 +23,8 @@ exports.get = async (id) => {
  * @returns {Promise<Model<TModelAttributes, TCreationAttributes>>}
  */
 exports.insert = async (newCustomer) => {
-  const customer = model.build(newCustomer);
   try {
+    const customer = model.build(newCustomer);
     return await customer.save();
   } catch (err) {
     throw err;
