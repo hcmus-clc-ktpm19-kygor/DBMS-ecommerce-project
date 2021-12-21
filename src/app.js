@@ -18,6 +18,7 @@ const confirmationRouter = require('./routes/confirmation');
 const productRouter = require('./components/product/productRouter');
 const authRouter = require('./components/auth/authRouter');
 const accountRouter = require('./components/account/accountRouter');
+const orderRouter = require('./components/order/orderRouter');
 const apiRouter = require('./api/apiRouter');
 
 const loggedInUserGuard = require('./middlewares/loggedInUserGuard');
@@ -59,6 +60,7 @@ app.use('/', indexRouter);
 app.use('/', authRouter);
 // app.use('/account' ,accountRouter);
 app.use('/account', loggedInUserGuard ,accountRouter);
+app.use('/order', orderRouter);
 app.use('/products', productRouter);
 app.use('/confirmation', loggedInUserGuard, confirmationRouter);
 app.use('/users', usersRouter);

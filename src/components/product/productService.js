@@ -1,4 +1,4 @@
-const model = require('./productModel');
+const model = require('../../../../ecommerce-web-admin-project/src/components/product/productModel');
 
 /**
  * Lay 1 product bang id <br>
