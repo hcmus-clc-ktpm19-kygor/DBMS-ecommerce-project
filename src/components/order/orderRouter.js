@@ -29,20 +29,12 @@ router.post("/dirty-read-error", async function (req, res) {
   try {
     // make sure that any items are correctly URL encoded in the connection string
     const pool = await sql.connect(sqlConfig);
-    // const result = await pool
-    //   .request()
-    //   .input("MA_SAN_PHAM", sql.VarChar, "SP02")
-    //   .output("SO_LUONG", sql.Int)
-    //   .execute("sp_DIRTYREAD_TRAN2");
-    // console.dir(result);
 
     const request = new sql.Request();
     request.input("MA_SAN_PHAM", sql.VarChar, "SP02");
     request.output("SO_LUONG", sql.Int);
     request.execute("sp_DIRTYREAD_TRAN2", (err, result) => {
-      // ... error checks
       res.json({message: result.output}); // key/value collection of output values
-      // ...
     });
   } catch (err) {
     console.log(err.message);
