@@ -3,7 +3,7 @@ const router = express.Router();
 
 const partnerRouter = require("../partner/partnerRouter");
 const controller = require("./adminController");
-const sql = require("mssql");
+const accountService = require("../account/accountService");
 
 // Demo lỗi
 router.get("/cycle-deadlock-error-trans-1", async function (req, res) {
@@ -32,13 +32,18 @@ router.get("/cycle-deadlock-error-trans-1", async function (req, res) {
     request.input("TEN_DANG_NHAP_1", sql.VarChar, "LOGIN_DT01");
     request.input("MAT_KHAU_MOI", sql.VarChar, "456");
     request.input("TEN_DANG_NHAP_2", sql.VarChar, "LOGIN_DT02");
-    request.execute("sp_CYCLE_DEADLOCK_TRAN1", function (err, results) {
+    request.execute("sp_CYCLE_DEADLOCK_TRAN1", async function (err, results) {
       console.log(results.returnValue);
+      let mess;
       if (results.returnValue === 1205) {
-        req.flash("deadlock_message", "CÓ DEADLOCK XẢY RA");
+        mess = "CÓ DEADLOCK XẢY RA";
       }
 
-      res.redirect('/admin/profile');
+      const accounts = await accountService.getAll();
+      res.render("admin/views/profile", {
+        accounts,
+        deadlock_mess: mess,
+      });
     });
   } catch (err) {
     res.json({ message: err.message });
@@ -70,13 +75,18 @@ router.get("/cycle-deadlock-error-trans-2", async function (req, res) {
     request.input("TEN_DANG_NHAP_1", sql.VarChar, "LOGIN_DT01");
     request.input("MAT_KHAU_MOI", sql.VarChar, "456");
     request.input("TEN_DANG_NHAP_2", sql.VarChar, "LOGIN_DT02");
-    request.execute("sp_CYCLE_DEADLOCK_TRAN2", function (err, results) {
+    request.execute("sp_CYCLE_DEADLOCK_TRAN2", async function (err, results) {
       console.log(results.returnValue);
+      let mess;
       if (results.returnValue === 1205) {
-        req.flash("deadlock_message", "CÓ DEADLOCK XẢY RA");
+        mess = "CÓ DEADLOCK XẢY RA";
       }
 
-      res.redirect('/admin/profile');
+      const accounts = await accountService.getAll();
+      res.render("admin/views/profile", {
+        accounts,
+        deadlock_mess: mess,
+      });
     });
   } catch (err) {
     res.json({ message: err.message });
@@ -109,16 +119,19 @@ router.get("/fix-cycle-deadlock-trans-1", async function (req, res) {
     request.input("TEN_DANG_NHAP_1", sql.VarChar, "LOGIN_DT01");
     request.input("MAT_KHAU_MOI", sql.VarChar, "456");
     request.input("TEN_DANG_NHAP_2", sql.VarChar, "LOGIN_DT02");
-    request.execute("sp_CYCLE_DEADLOCK_FIX_TRAN1", function (err, results) {
+    request.execute("sp_CYCLE_DEADLOCK_FIX_TRAN1", async function (err, results) {
       console.log(results.returnValue);
+      let mess;
       if (results.returnValue === 1205) {
-        req.flash("deadlock_message", "CÓ DEADLOCK XẢY RA");
+        mess = "CÓ DEADLOCK XẢY RA";
       }
 
-      res.redirect('/admin/profile');
+      const accounts = await accountService.getAll();
+      res.render("admin/views/profile", {
+        accounts,
+        deadlock_mess: mess,
+      });
     });
-
-    res.redirect('/admin/profile');
   } catch (err) {
     res.json({ message: err.message });
   }
@@ -149,13 +162,18 @@ router.get("/fix-cycle-deadlock-trans-2", async function (req, res) {
     request.input("TEN_DANG_NHAP_1", sql.VarChar, "LOGIN_DT01");
     request.input("MAT_KHAU_MOI", sql.VarChar, "456");
     request.input("TEN_DANG_NHAP_2", sql.VarChar, "LOGIN_DT02");
-    request.execute("sp_CYCLE_DEADLOCK_FIX_TRAN2", function (err, results) {
+    request.execute("sp_CYCLE_DEADLOCK_FIX_TRAN2", async function (err, results) {
       console.log(results.returnValue);
+      let mess;
       if (results.returnValue === 1205) {
-        req.flash("deadlock_message", "CÓ DEADLOCK XẢY RA");
+        mess = "CÓ DEADLOCK XẢY RA";
       }
 
-      res.redirect('/admin/profile');
+      const accounts = await accountService.getAll();
+      res.render("admin/views/profile", {
+        accounts,
+        deadlock_mess: mess,
+      });
     });
   } catch (err) {
     res.json({ message: err.message });

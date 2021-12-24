@@ -100,10 +100,13 @@ router.get("/conversion-deadlock-error-trans-1", async function (req, res) {
       let mess;
       if (results.returnValue === 1205) {
         mess = "CÓ DEADLOCK XẢY RA";
+      } else if (results.returnValue === 1) {
+        mess = "CHỌN ĐƠN THẤT BẠI";
+      } else {
+        mess = "CHỌN ĐƠN THÀNH CÔNG";
       }
 
       const orders = await service.getAll();
-      // res.json(orders);
       res.render('order/views/order', {
         orders,
         deadlock_message: mess,
@@ -143,10 +146,13 @@ router.get("/conversion-deadlock-error-trans-2", async function (req, res) {
       let mess;
       if (results.returnValue === 1205) {
         mess = "CÓ DEADLOCK XẢY RA";
+      } else if (results.returnValue === 1) {
+        mess = "CHỌN ĐƠN THẤT BẠI";
+      } else {
+        mess = "CHỌN ĐƠN THÀNH CÔNG";
       }
 
       const orders = await service.getAll();
-      // res.json(orders);
       res.render('order/views/order', {
         orders,
         deadlock_message: mess,
@@ -181,13 +187,22 @@ router.get("/fix-conversion-deadlock-trans-1", async function (req, res) {
     const request = new sql.Request();
     request.input("MA_TAI_XE", sql.VarChar, "TX01");
     request.input("MA_DON_HANG", sql.VarChar, "DH04");
-    request.execute("CONVERSION_DEADLOCK_FIX", function (err, results) {
+    request.execute("CONVERSION_DEADLOCK_FIX", async function (err, results) {
       console.log(results.returnValue);
+      let mess;
       if (results.returnValue === 1205) {
-        req.flash("deadlock_message", "CÓ DEADLOCK XẢY RA");
+        mess = "CÓ DEADLOCK XẢY RA";
+      } else if (results.returnValue === 1) {
+        mess = "CHỌN ĐƠN THẤT BẠI";
+      } else {
+        mess = "CHỌN ĐƠN THÀNH CÔNG";
       }
 
-      res.redirect("/order");
+      const orders = await service.getAll();
+      res.render('order/views/order', {
+        orders,
+        deadlock_message: mess,
+      });
     });
   } catch (err) {
     res.json({ message: err.message });
@@ -218,13 +233,22 @@ router.get("/fix-conversion-deadlock-trans-2", async function (req, res) {
     const request = new sql.Request();
     request.input("MA_TAI_XE", sql.VarChar, "TX04");
     request.input("MA_DON_HANG", sql.VarChar, "DH04");
-    request.execute("CONVERSION_DEADLOCK_FIX", function (err, results) {
+    request.execute("CONVERSION_DEADLOCK_FIX", async function (err, results) {
       console.log(results.returnValue);
+      let mess;
       if (results.returnValue === 1205) {
-        req.flash("deadlock_message", "CÓ DEADLOCK XẢY RA");
+        mess = "CÓ DEADLOCK XẢY RA";
+      } else if (results.returnValue === 1) {
+        mess = "CHỌN ĐƠN THẤT BẠI";
+      } else {
+        mess = "CHỌN ĐƠN THÀNH CÔNG";
       }
 
-      res.redirect("/order");
+      const orders = await service.getAll();
+      res.render('order/views/order', {
+        orders,
+        deadlock_message: mess,
+      });
     });
   } catch (err) {
     res.json({ message: err.message });
